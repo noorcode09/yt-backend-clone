@@ -1,9 +1,20 @@
 import dotenv from 'dotenv';
 import connectDB from "./db/index.js";
+import app from './app.js'
+import { port } from './constants.js';
+import logger from './utils/logger.js';
 
 dotenv.config() // This loads the variables from .env into process.env
 
 connectDB()
+.then( () => {
+    app.listen(port, () => {
+        logger.info(`📡 Server is running at port ${port}`)
+    })
+})
+.catch( (err) => {
+    logger.error("MONGO db connection failed !!! ", err);
+})
 
 
 

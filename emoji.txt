@@ -1,0 +1,72 @@
+🎬 YT Clone Backend Emoji Combos
+🧩 1. Server & Startup
+bash
+Copy
+Edit
+🚀 Server started on port 3000
+🔧 Express middleware loaded
+🌐 API base route is /api/v1
+🍃 2. MongoDB & Database
+bash
+Copy
+Edit
+🍃 Connecting to MongoDB...
+✅ MongoDB connected! Host: localhost
+❌ MongoDB connection failed
+📁 Switched to database: ytcloneDB
+📄 New document inserted: video
+♻️ Updated document: user profile
+👤 3. User Auth & Sessions
+bash
+Copy
+Edit
+👤 User registered: john.doe@gmail.com
+🔐 Login successful for user ID: 60x1ab...
+❌ Invalid credentials: login failed
+🔑 JWT token issued
+🚫 Token expired — please log in again
+📹 4. Videos & Uploads
+bash
+Copy
+Edit
+📤 Uploading video: my-travel-vlog.mp4
+✅ Video uploaded successfully!
+🖼️ Thumbnail generated
+🗑️ Video deleted by user
+❌ Video not found (404)
+💬 5. Comments & Likes
+bash
+Copy
+Edit
+💬 New comment added by user123
+❤️ Video liked by user456
+👎 Dislike removed
+🗑️ Comment deleted by owner
+🧾 6. Admin & Logs
+bash
+Copy
+Edit
+🧑‍⚖️ Admin access granted
+🧾 Logs written to logs/combined.log
+⚠️ Suspicious activity detected
+⚙️ 7. Dev / Debug
+bash
+Copy
+Edit
+🔍 Debug mode enabled
+🧪 Running tests...
+✅ All tests passed
+❌ Test failed: user login flow
+💡 How to Use in Code
+js
+Copy
+Edit
+logger.info('📤 Uploading video: nature.mp4');
+logger.error('❌ MongoDB connection failed!');
+logger.warn('⚠️ Token expired. Forcing logout.');
+✅ Bonus: Copy-Paste Friendly List
+Copy
+Edit
+🚀 🔧 🌐 🍃 ✅ ❌ 📁 📄 ♻️
+👤 🔐 🔑 🚫 📤 🖼️ 🗑️ 💬 ❤️ 👎
+🧑‍⚖️ 🧾 ⚠️ 🔍 🧪
