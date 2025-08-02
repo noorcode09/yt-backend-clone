@@ -2,7 +2,7 @@
   "name": "yt-backend",
   "version": "1.0.0",
   "description": "a backend project clone of youtube",
-  "main": "index.js",
+  "main": "./src/server.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon src/server.js"

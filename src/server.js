@@ -1,10 +1,12 @@
-import dotenv from 'dotenv';
 import connectDB from "./db/index.js";
 import app from './app.js'
 import { port } from './constants.js';
 import logger from './utils/logger.js';
 
-dotenv.config() // This loads the variables from .env into process.env
+// console.log(process.env.PORT)
+// console.log("Mongo_URI:", process.env.MONGODB_URI)
+
+// const port = process.env.PORT || 8000
 
 connectDB()
 .then( () => {
