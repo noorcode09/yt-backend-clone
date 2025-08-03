@@ -8,6 +8,22 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 
 
+const generateAccessAndRefreshToken = async (userId) => {
+    try {
+        const user = await User.findById(userId)
+        const accessToken = user.generateAccessToken()
+        const refreshToken = user.generateRefreshToken()
+
+        user.refreshToken = refreshToken
+        await user.save({ValiditeBeforeSave: false})
+
+        return {accessToken, refreshToken}
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while generating refresh and access token")
+    }
+}
+
+
 const registerUser = asyncHandler ( async (req, res) => {
     /*
     1. get user details from frontend
@@ -81,6 +97,101 @@ const registerUser = asyncHandler ( async (req, res) => {
 })
 
 
+const loginUser = asyncHandler(async (req, res) => {
+    /*
+    1. req body -> data
+    2. username or email check in database
+    3. find the user
+    4. password check 
+    5. access and refresh token 
+    6. send cookie
+    7. response for success message
+    */
+
+    const { email, username, password } = req.body;
+
+    if (!username && !email) {
+        throw new ApiError(400, "Username or email is required");
+    }
+
+    // Find user by username or email, including password explicitly
+    const user = await User.findOne({
+        $or: [{ username }, { email }]
+    }).select("+password");
+
+    if (!user) {
+        throw new ApiError(404, "User does not exist");
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password);
+
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid user credentials");
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
+
+    // Fetch user again without password or refreshToken
+    const loggedUser = await User.findById(user._id).select("-password -refreshToken").lean();
+
+    // Cookie options
+    const options = {
+        httpOnly: true,
+        secure: true, // set to false for localhost during development if needed
+        sameSite: "Strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    };
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: loggedUser,
+                    accessToken,
+                    refreshToken
+                },
+                "User logged in successfully"
+            )
+        );
+});
+
+
+// Logout features
+
+const logoutUser = asyncHandler(async (req, res) => {
+    if (!req.user || !req.user._id) {
+        throw new ApiError(400, "User not authenticated");
+    }
+
+    // Clear refresh token from DB (optional, depends on your logic)
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $unset: {
+                refreshToken: ""
+            }
+        },
+        {
+            new: true
+        }
+    );
+
+    const cookieOptions = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "Strict"
+    };
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", cookieOptions)
+        .clearCookie("refreshToken", cookieOptions)
+        .json(new ApiResponse(200, {}, "User logged out successfully"));
+});
 
 
 
@@ -88,4 +199,4 @@ const registerUser = asyncHandler ( async (req, res) => {
 
 
 
-export { registerUser }
+export { registerUser, loginUser , logoutUser}
